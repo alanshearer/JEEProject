@@ -9,10 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.sun.msv.writer.relaxng.Context;
-
 import model.JPAObject;
-import model.JPAObjectDAOImpl;
+import model.ejb.*;
 
 /**
  * Servlet implementation class JPAObjectServlet
@@ -22,7 +20,7 @@ public class JPAObjectServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	
-	@EJB JPAObjectDAOImpl jpaObjectDAOImpl;
+	@EJB JPAObjectEJB jpaObjectejb;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -37,9 +35,11 @@ public class JPAObjectServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		//String searchString = request.getParameter("searchString");
+		String searchString = "";
+		if (request.getParameter("searchString")!=null)
+			searchString = request.getParameter("searchString");
 		
-		request.setAttribute("jpaobject", jpaObjectDAOImpl.getAllList());
+		request.setAttribute("jpaobject", jpaObjectejb.getAllList(searchString));
 		request.getRequestDispatcher("/jpaobject.jsp").forward(request, response);
 	}
 
@@ -49,12 +49,21 @@ public class JPAObjectServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
+		if (request.getParameter("AddButton")!=null){
 		String name = request.getParameter("name");
 		if (name != null){
-			jpaObjectDAOImpl.persist(new JPAObject(name));
+			jpaObjectejb.persist(new JPAObject(name));
 			
 			}
-		
+		}
+		else if (request.getParameter("DeleteButton")!=null){
+			String objectIdToDeleteString = request.getParameter("jpaObjectToDelete");
+			 //System.out.println("<html><body onload=\"alert('" + objectIdToDelete +"')\"></body></html>");
+
+			Long objectIdToDelete = Long.parseLong(objectIdToDeleteString);
+			jpaObjectejb.delete(objectIdToDelete);
+		}
+
 		doGet(request, response);
 	}
 

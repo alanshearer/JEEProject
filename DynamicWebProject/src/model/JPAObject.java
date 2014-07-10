@@ -38,4 +38,8 @@ public class JPAObject implements Serializable {
 		return name + " (signed on " + signingDate +")";
 	}
 	
+	public Long getId(){
+		return this.id;
+	}
+	
 }

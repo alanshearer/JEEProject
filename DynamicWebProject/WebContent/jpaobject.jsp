@@ -10,27 +10,34 @@
 <body>
 <form action="jpaobjectservlet" method="post">
 Name: <input type="text" name="name" />
-<input type="submit" value="Add" />
+<input type="submit" name="AddButton" value="Add" />
 </form>
 <br/>
 <form action="jpaobjectservlet" method="get">
-Search string: <input type="text" name="searchstring" />
-<input type="submit" value="Search" />
+Search string: <input type="text" name="searchString" />
+<input type="submit" name="SearchButton" value="Search" />
 </form>
 
+
 <hr>
-<ol><% @SuppressWarnings("unchecked")
+<table><% @SuppressWarnings("unchecked")
 List<JPAObject> jpaobjects = (List<JPAObject>)request.getAttribute("jpaobject");
 if (jpaobjects != null){
 	for (JPAObject jpaobject : jpaobjects){ %>
-		<li> <%= jpaobject %>
-		</li>
+		<tr><td> <%= jpaobject.toString() %></td>
+		<td>
+		<form action="jpaobjectservlet" method="post">
+		<input type="hidden" name="jpaObjectToDelete" value="<%= jpaobject.getId() %>" />
+		<input type="submit" name="DeleteButton" value="Delete" />
+		</form>
+		</td>
+		</tr>
 	<% }
 
 }
 
 %>
-</ol>
+</table>
 </hr>
 
         <iframe src="http://www.objectdb.com/pw.html?jee-eclipse"
